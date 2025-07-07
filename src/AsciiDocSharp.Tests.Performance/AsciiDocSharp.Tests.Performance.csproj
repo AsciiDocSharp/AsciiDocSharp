@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AsciiDocSharp\AsciiDocSharp.csproj" />
+    <ProjectReference Include="..\AsciiDocSharp.Parser\AsciiDocSharp.Parser.csproj" />
+    <ProjectReference Include="..\AsciiDocSharp.Converters.Html\AsciiDocSharp.Converters.Html.csproj" />
+  </ItemGroup>
+
+</Project>

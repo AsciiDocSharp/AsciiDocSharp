@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\AsciiDocSharp.Core\AsciiDocSharp.Core.csproj" />
+    <ProjectReference Include="..\AsciiDocSharp.Parser\AsciiDocSharp.Parser.csproj" />
+    <ProjectReference Include="..\AsciiDocSharp.Converters.Core\AsciiDocSharp.Converters.Core.csproj" />
+    <ProjectReference Include="..\AsciiDocSharp.Converters.Html\AsciiDocSharp.Converters.Html.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <PackageId>AsciiDocSharp</PackageId>
+    <PackageVersion>0.1.0</PackageVersion>
+    <Authors>AsciiDocSharp Team</Authors>
+    <Company>AsciiDocSharp</Company>
+    <Product>AsciiDocSharp</Product>
+    <Description>AsciiDocSharp - A comprehensive .NET library for parsing AsciiDoc documents and converting them to various output formats. This is the main facade package with high-level APIs.</Description>
+    <PackageTags>asciidoc;documentation;markup;parser;converter;dotnet</PackageTags>
+    <PackageProjectUrl>https://github.com/AsciiDocSharp/AsciiDocSharp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/AsciiDocSharp/AsciiDocSharp</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+
+
+</Project>
