@@ -171,6 +171,24 @@ namespace AsciiDoc.NET.Parser
         /// <summary>Example block delimiters (====) and content.</summary>
         ExampleDelimiter,
         
+        /// <summary>Verse block attribute ([verse]) and content.</summary>
+        VerseAttribute,
+        
+        /// <summary>Verse block delimiters (____) and content.</summary>
+        VerseDelimiter,
+        
+        /// <summary>Literal block attribute ([literal]) and content.</summary>
+        LiteralAttribute,
+        
+        /// <summary>Literal block delimiters (....) and content.</summary>
+        LiteralDelimiter,
+        
+        /// <summary>Listing block attribute ([listing]) and content.</summary>
+        ListingAttribute,
+        
+        /// <summary>Listing block delimiters (----) and content.</summary>
+        ListingDelimiter,
+        
         /// <summary>Attribute definition lines (:attr: value).</summary>
         AttributeLine,
         

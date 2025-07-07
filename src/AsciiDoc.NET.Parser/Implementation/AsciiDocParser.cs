@@ -41,6 +41,8 @@ namespace AsciiDoc.NET.Parser.Implementation
         private static readonly Regex CodeBlockWithLanguagePattern = new Regex(@"^----(\w+)?$", RegexOptions.Compiled);
         private static readonly Regex SourceAttributePattern = new Regex(@"^source(?:,\s*(\w+))?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex AdmonitionPattern = new Regex(@"^(NOTE|TIP|IMPORTANT|WARNING|CAUTION):\s*(.*)$", RegexOptions.Compiled);
+        private static readonly Regex VerseAttributePattern = new Regex(@"^\[verse(?:,\s*([^,\]]+))?(?:,\s*([^\]]+))?\]$", RegexOptions.Compiled);
+        private static readonly Regex LiteralAttributePattern = new Regex(@"^\[literal\]$", RegexOptions.Compiled);
         
         // Individual patterns for inline element matching
         private static readonly Regex StrongPattern = new Regex(@"\*([^*]+)\*", RegexOptions.Compiled);
@@ -197,11 +199,21 @@ namespace AsciiDoc.NET.Parser.Implementation
                     return ParseSidebar(context);
                 case TokenType.ExampleDelimiter:
                     return ParseExample(context);
+                case TokenType.VerseDelimiter:
+                    return ParseVerse(context);
+                case TokenType.LiteralDelimiter:
+                    return ParseLiteral(context);
+                case TokenType.LiteralAttribute:
+                    return ParseLiteralAttribute(context);
+                case TokenType.ListingAttribute:
+                    return ParseListingAttribute(context);
                 case TokenType.AttributeLine:
                     ParseAttributeLine(context);
                     return null;
                 case TokenType.AttributeBlockLine:
                     return ParseAttributeBlockElement(context);
+                case TokenType.VerseAttribute:
+                    return ParseVerseAttribute(context);
                 case TokenType.AdmonitionBlock:
                     return ParseAdmonition(context);
                 case TokenType.TableOfContents:
@@ -550,6 +562,37 @@ namespace AsciiDoc.NET.Parser.Implementation
                     context.Advance();
                 }
                 
+                // Check if this is a verse attribute
+                var verseMatch = VerseAttributePattern.Match(attributeValue);
+                if (verseMatch.Success)
+                {
+                    // Extract author and citation from verse attribute
+                    string author = verseMatch.Groups[1].Success ? verseMatch.Groups[1].Value.Trim() : null;
+                    string citation = verseMatch.Groups[2].Success ? verseMatch.Groups[2].Value.Trim() : null;
+                    
+                    // Check for verse delimiters (____) or open block delimiters (--)
+                    if (context.CurrentToken.Type == TokenType.BlockQuoteDelimiter)
+                    {
+                        return ParseVerseWithAttributes(context, null, author, citation);
+                    }
+                    // Could also support other delimiters like -- for open blocks
+                }
+                
+                // Check if this is a literal attribute
+                var literalMatch = LiteralAttributePattern.Match(attributeValue);
+                if (literalMatch.Success)
+                {
+                    // Check for literal delimiters (....) or parse following text as literal
+                    if (context.CurrentToken.Type == TokenType.LiteralDelimiter)
+                    {
+                        return ParseLiteral(context);
+                    }
+                    else if (context.CurrentToken.Type == TokenType.Text)
+                    {
+                        return ParseLiteralFromText(context);
+                    }
+                }
+                
                 // Check if the next element is a code block
                 if (context.CurrentToken.Type == TokenType.CodeBlockDelimiter)
                 {
@@ -827,6 +870,338 @@ namespace AsciiDoc.NET.Parser.Implementation
             }
             
             return example;
+        }
+
+        private IVerse ParseVerse(IParseContext context)
+        {
+            // Skip the opening delimiter
+            context.Advance();
+            
+            // Skip the immediate newline after the opening delimiter if present
+            if (context.CurrentToken.Type == TokenType.NewLine)
+            {
+                context.Advance();
+            }
+            
+            var content = new System.Text.StringBuilder();
+            string title = null;
+            string author = null;
+            string citation = null;
+            
+            // Parse verse content until we hit the closing delimiter or EOF
+            while (context.CurrentToken.Type != TokenType.EndOfFile && 
+                   context.CurrentToken.Type != TokenType.VerseDelimiter)
+            {
+                if (context.CurrentToken.Type == TokenType.Text)
+                {
+                    content.Append(context.CurrentToken.Value);
+                }
+                else if (context.CurrentToken.Type == TokenType.NewLine)
+                {
+                    content.AppendLine();
+                }
+                else if (context.CurrentToken.Type == TokenType.EmptyLine)
+                {
+                    content.AppendLine();
+                }
+                
+                context.Advance();
+            }
+            
+            // Skip the closing delimiter if present
+            if (context.CurrentToken.Type == TokenType.VerseDelimiter)
+            {
+                context.Advance();
+            }
+            
+            // Remove trailing newline if present
+            var verseContent = content.ToString();
+            if (verseContent.EndsWith("\n"))
+            {
+                verseContent = verseContent.Substring(0, verseContent.Length - 1);
+            }
+            if (verseContent.EndsWith("\r"))
+            {
+                verseContent = verseContent.Substring(0, verseContent.Length - 1);
+            }
+            
+            return new Verse(verseContent, title, author, citation);
+        }
+
+        private IVerse ParseVerseWithAttributes(IParseContext context, string title, string author, string citation)
+        {
+            // Skip the opening delimiter (____) 
+            context.Advance();
+            
+            // Skip the immediate newline after the opening delimiter if present
+            if (context.CurrentToken.Type == TokenType.NewLine)
+            {
+                context.Advance();
+            }
+            
+            var content = new System.Text.StringBuilder();
+            
+            // Parse verse content until we hit the closing delimiter or EOF
+            while (context.CurrentToken.Type != TokenType.EndOfFile && 
+                   context.CurrentToken.Type != TokenType.BlockQuoteDelimiter)
+            {
+                if (context.CurrentToken.Type == TokenType.Text)
+                {
+                    content.Append(context.CurrentToken.Value);
+                }
+                else if (context.CurrentToken.Type == TokenType.NewLine)
+                {
+                    content.AppendLine();
+                }
+                else if (context.CurrentToken.Type == TokenType.EmptyLine)
+                {
+                    content.AppendLine();
+                }
+                
+                context.Advance();
+            }
+            
+            // Skip the closing delimiter if present
+            if (context.CurrentToken.Type == TokenType.BlockQuoteDelimiter)
+            {
+                context.Advance();
+            }
+            
+            // Remove trailing newline if present
+            var verseContent = content.ToString();
+            if (verseContent.EndsWith("\n"))
+            {
+                verseContent = verseContent.Substring(0, verseContent.Length - 1);
+            }
+            if (verseContent.EndsWith("\r"))
+            {
+                verseContent = verseContent.Substring(0, verseContent.Length - 1);
+            }
+            
+            return new Verse(verseContent, title, author, citation);
+        }
+
+        private IVerse ParseVerseAttribute(IParseContext context)
+        {
+            var attributeValue = context.CurrentToken.Value;
+            
+            // Extract author and citation from verse attribute
+            var verseMatch = VerseAttributePattern.Match(attributeValue);
+            string author = verseMatch.Groups[1].Success ? verseMatch.Groups[1].Value.Trim() : null;
+            string citation = verseMatch.Groups[2].Success ? verseMatch.Groups[2].Value.Trim() : null;
+            
+            context.Advance();
+            
+            // Skip any empty lines or newlines
+            while (context.CurrentToken.Type == TokenType.NewLine || context.CurrentToken.Type == TokenType.EmptyLine)
+            {
+                context.Advance();
+            }
+            
+            // Check for verse delimiters (____) 
+            if (context.CurrentToken.Type == TokenType.BlockQuoteDelimiter)
+            {
+                return ParseVerseWithAttributes(context, null, author, citation);
+            }
+            
+            // If no delimiter found, return null and let the parsing continue
+            return null;
+        }
+
+        private ILiteral ParseLiteral(IParseContext context)
+        {
+            // Skip the opening delimiter (....)
+            context.Advance();
+            
+            var content = new System.Text.StringBuilder();
+            
+            // Parse literal content until we hit the closing delimiter or EOF
+            while (context.CurrentToken.Type != TokenType.EndOfFile && 
+                   context.CurrentToken.Type != TokenType.LiteralDelimiter)
+            {
+                if (context.CurrentToken.Type == TokenType.Text)
+                {
+                    content.Append(context.CurrentToken.Value);
+                }
+                else if (context.CurrentToken.Type == TokenType.NewLine)
+                {
+                    content.Append('\n');
+                }
+                else if (context.CurrentToken.Type == TokenType.EmptyLine)
+                {
+                    content.Append('\n');
+                }
+                
+                context.Advance();
+            }
+            
+            // Skip the closing delimiter if present
+            if (context.CurrentToken.Type == TokenType.LiteralDelimiter)
+            {
+                context.Advance();
+            }
+            
+            // Remove leading/trailing newlines
+            var literalContent = content.ToString();
+            literalContent = literalContent.Trim('\n', '\r');
+            
+            return new Literal(literalContent);
+        }
+
+        private ILiteral ParseLiteralFromText(IParseContext context)
+        {
+            // Parse text content as literal (used with [literal] attribute)
+            var content = new System.Text.StringBuilder();
+            
+            // Parse literal content until we hit an empty line, new block element, or EOF
+            while (context.CurrentToken.Type != TokenType.EndOfFile && 
+                   context.CurrentToken.Type != TokenType.EmptyLine &&
+                   context.CurrentToken.Type != TokenType.Header &&
+                   context.CurrentToken.Type != TokenType.ListItem &&
+                   context.CurrentToken.Type != TokenType.AttributeLine &&
+                   context.CurrentToken.Type != TokenType.AttributeBlockLine)
+            {
+                if (context.CurrentToken.Type == TokenType.Text)
+                {
+                    content.Append(context.CurrentToken.Value);
+                }
+                else if (context.CurrentToken.Type == TokenType.NewLine)
+                {
+                    content.Append('\n');
+                }
+                
+                context.Advance();
+            }
+            
+            // Remove leading/trailing newlines
+            var literalContent = content.ToString();
+            literalContent = literalContent.Trim('\n', '\r');
+            
+            return new Literal(literalContent);
+        }
+
+        private ILiteral ParseLiteralAttribute(IParseContext context)
+        {
+            // Skip the [literal] attribute line
+            context.Advance();
+            
+            // Skip any empty lines or newlines
+            while (context.CurrentToken.Type == TokenType.NewLine || context.CurrentToken.Type == TokenType.EmptyLine)
+            {
+                context.Advance();
+            }
+            
+            // Check if the next element is a literal delimiter
+            if (context.CurrentToken.Type == TokenType.LiteralDelimiter)
+            {
+                return ParseLiteral(context);
+            }
+            // Otherwise parse following text as literal
+            else if (context.CurrentToken.Type == TokenType.Text)
+            {
+                return ParseLiteralFromText(context);
+            }
+            
+            // If no content follows, return empty literal
+            return new Literal("");
+        }
+
+        private IListing ParseListingAttribute(IParseContext context)
+        {
+            // Skip the [listing] attribute line
+            context.Advance();
+            
+            // Skip any empty lines or newlines
+            while (context.CurrentToken.Type == TokenType.NewLine || context.CurrentToken.Type == TokenType.EmptyLine)
+            {
+                context.Advance();
+            }
+            
+            // Check if the next element is a code block delimiter (----)
+            if (context.CurrentToken.Type == TokenType.CodeBlockDelimiter)
+            {
+                return ParseListingFromCodeBlock(context);
+            }
+            // Otherwise parse following text as listing
+            else if (context.CurrentToken.Type == TokenType.Text)
+            {
+                return ParseListingFromText(context);
+            }
+            
+            // If no content follows, return empty listing
+            return new Listing("", null, null);
+        }
+
+        private IListing ParseListingFromCodeBlock(IParseContext context)
+        {
+            // Skip the opening delimiter (----)
+            context.Advance();
+            
+            var content = new System.Text.StringBuilder();
+            
+            // Parse listing content until we hit the closing delimiter or EOF
+            while (context.CurrentToken.Type != TokenType.EndOfFile && 
+                   context.CurrentToken.Type != TokenType.CodeBlockDelimiter)
+            {
+                if (context.CurrentToken.Type == TokenType.Text)
+                {
+                    content.Append(context.CurrentToken.Value);
+                }
+                else if (context.CurrentToken.Type == TokenType.NewLine)
+                {
+                    content.Append('\n');
+                }
+                else if (context.CurrentToken.Type == TokenType.EmptyLine)
+                {
+                    content.Append('\n');
+                }
+                
+                context.Advance();
+            }
+            
+            // Skip the closing delimiter if present
+            if (context.CurrentToken.Type == TokenType.CodeBlockDelimiter)
+            {
+                context.Advance();
+            }
+            
+            // Remove leading/trailing newlines
+            var listingContent = content.ToString();
+            listingContent = listingContent.Trim('\n', '\r');
+            
+            return new Listing(listingContent, null, null);
+        }
+
+        private IListing ParseListingFromText(IParseContext context)
+        {
+            // Parse text content as listing (used with [listing] attribute)
+            var content = new System.Text.StringBuilder();
+            
+            // Parse listing content until we hit an empty line, new block element, or EOF
+            while (context.CurrentToken.Type != TokenType.EndOfFile && 
+                   context.CurrentToken.Type != TokenType.EmptyLine &&
+                   context.CurrentToken.Type != TokenType.Header &&
+                   context.CurrentToken.Type != TokenType.ListItem &&
+                   context.CurrentToken.Type != TokenType.AttributeLine &&
+                   context.CurrentToken.Type != TokenType.AttributeBlockLine)
+            {
+                if (context.CurrentToken.Type == TokenType.Text)
+                {
+                    content.Append(context.CurrentToken.Value);
+                }
+                else if (context.CurrentToken.Type == TokenType.NewLine)
+                {
+                    content.Append('\n');
+                }
+                
+                context.Advance();
+            }
+            
+            // Remove leading/trailing newlines
+            var listingContent = content.ToString();
+            listingContent = listingContent.Trim('\n', '\r');
+            
+            return new Listing(listingContent, null, null);
         }
 
         private IAdmonition ParseAdmonition(IParseContext context)
