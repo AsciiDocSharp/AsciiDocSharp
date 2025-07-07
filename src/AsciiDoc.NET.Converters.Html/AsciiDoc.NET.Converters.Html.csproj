@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\AsciiDoc.NET.Core\AsciiDoc.NET.Core.csproj" />
-    <ProjectReference Include="..\AsciiDoc.NET.Converters.Core\AsciiDoc.NET.Converters.Core.csproj" />
+    <ProjectReference Include="..\AsciiDoc.NET.Core\AsciiDoc.Net.Core.csproj" />
+    <ProjectReference Include="..\AsciiDoc.NET.Converters.Core\AsciiDoc.Net.Converters.Core.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

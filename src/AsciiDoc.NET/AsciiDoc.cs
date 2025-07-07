@@ -1,4 +1,4 @@
-// AsciiDoc.NET
+// AsciiDoc.Net
 // Copyright (c) 2025 Guillermo Espert
 // Distributed under the MIT License. See LICENSE.adoc in the project root for full license information.
 //
@@ -20,10 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using AsciiDoc.NET.Converters.Core;
-using AsciiDoc.NET.Converters.Html;
+using AsciiDoc.Net.Converters.Core;
+using AsciiDoc.Net.Converters.Html;
 
-namespace AsciiDoc.NET
+namespace AsciiDoc.Net
 {
     /// <summary>
     /// Provides convenient static methods for common AsciiDoc processing operations.
@@ -60,7 +60,7 @@ namespace AsciiDoc.NET
         /// <param name="asciiDocContent">The AsciiDoc content to convert. Cannot be null or empty.</param>
         /// <returns>The converted HTML content as a string.</returns>
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="asciiDocContent"/> is null or empty.</exception>
-        /// <exception cref="AsciiDoc.NET.Parser.ParseException">Thrown when the AsciiDoc content cannot be parsed.</exception>
+        /// <exception cref="AsciiDoc.Net.Parser.ParseException">Thrown when the AsciiDoc content cannot be parsed.</exception>
         /// <example>
         /// <code>
         /// string asciiDoc = @"
@@ -84,7 +84,7 @@ namespace AsciiDoc.NET
         /// <returns>The converted HTML content as a string.</returns>
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="asciiDocContent"/> is null or empty.</exception>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="options"/> is null.</exception>
-        /// <exception cref="AsciiDoc.NET.Parser.ParseException">Thrown when the AsciiDoc content cannot be parsed.</exception>
+        /// <exception cref="AsciiDoc.Net.Parser.ParseException">Thrown when the AsciiDoc content cannot be parsed.</exception>
         public static string ToHtml(string asciiDocContent, IConverterOptions options)
         {
             return _processor.ProcessText(asciiDocContent, _htmlConverter, options);
@@ -99,7 +99,7 @@ namespace AsciiDoc.NET
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="filePath"/> is null or empty.</exception>
         /// <exception cref="System.IO.FileNotFoundException">Thrown when the specified file does not exist.</exception>
         /// <exception cref="System.UnauthorizedAccessException">Thrown when access to the file is denied.</exception>
-        /// <exception cref="AsciiDoc.NET.Parser.ParseException">Thrown when the AsciiDoc content cannot be parsed.</exception>
+        /// <exception cref="AsciiDoc.Net.Parser.ParseException">Thrown when the AsciiDoc content cannot be parsed.</exception>
         /// <example>
         /// <code>
         /// string html = AsciiDoc.FileToHtml("documentation.adoc");
@@ -121,7 +121,7 @@ namespace AsciiDoc.NET
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="options"/> is null.</exception>
         /// <exception cref="System.IO.FileNotFoundException">Thrown when the specified file does not exist.</exception>
         /// <exception cref="System.UnauthorizedAccessException">Thrown when access to the file is denied.</exception>
-        /// <exception cref="AsciiDoc.NET.Parser.ParseException">Thrown when the AsciiDoc content cannot be parsed.</exception>
+        /// <exception cref="AsciiDoc.Net.Parser.ParseException">Thrown when the AsciiDoc content cannot be parsed.</exception>
         public static string FileToHtml(string filePath, IConverterOptions options)
         {
             return _processor.ProcessFile(filePath, _htmlConverter, options);

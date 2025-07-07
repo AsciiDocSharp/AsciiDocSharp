@@ -1,4 +1,4 @@
-// AsciiDoc.NET
+// AsciiDoc.Net
 // Copyright (c) 2025 Guillermo Espert
 // Distributed under the MIT License. See LICENSE.adoc in the project root for full license information.
 //
@@ -21,11 +21,11 @@
 // SOFTWARE.
 
 using Xunit;
-using AsciiDoc.NET.Parser.Implementation;
-using AsciiDoc.NET.Core;
-using AsciiDoc.NET.Core.Elements;
+using AsciiDoc.Net.Parser.Implementation;
+using AsciiDoc.Net.Core;
+using AsciiDoc.Net.Core.Elements;
 
-namespace AsciiDoc.NET.Tests.Unit
+namespace AsciiDoc.Net.Tests.Unit
 {
     public class ParserTests
     {

@@ -14,9 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../AsciiDoc.NET/AsciiDoc.NET.csproj" />
-    <ProjectReference Include="../AsciiDoc.NET.Parser/AsciiDoc.NET.Parser.csproj" />
-    <ProjectReference Include="../AsciiDoc.NET.Converters.Html/AsciiDoc.NET.Converters.Html.csproj" />
+    <ProjectReference Include="..\AsciiDoc.NET\AsciiDoc.Net.csproj" />
+    <ProjectReference Include="..\AsciiDoc.NET.Parser\AsciiDoc.Net.Parser.csproj" />
+    <ProjectReference Include="..\AsciiDoc.NET.Converters.Html\AsciiDoc.Net.Converters.Html.csproj" />
   </ItemGroup>
 
 </Project>

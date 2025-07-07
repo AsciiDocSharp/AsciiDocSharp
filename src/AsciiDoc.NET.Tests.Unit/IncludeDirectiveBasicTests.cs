@@ -1,4 +1,4 @@
-// AsciiDoc.NET
+// AsciiDoc.Net
 // Copyright (c) 2025 Guillermo Espert
 // Distributed under the MIT License. See LICENSE.adoc in the project root for full license information.
 //
@@ -23,9 +23,9 @@
 using System;
 using System.IO;
 using Xunit;
-using AsciiDoc.NET.Parser.Implementation;
+using AsciiDoc.Net.Parser.Implementation;
 
-namespace AsciiDoc.NET.Tests.Unit
+namespace AsciiDoc.Net.Tests.Unit
 {
     public class IncludeDirectiveBasicTests
     {

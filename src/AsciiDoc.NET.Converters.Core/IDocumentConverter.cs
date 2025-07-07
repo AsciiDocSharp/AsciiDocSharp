@@ -1,4 +1,4 @@
-// AsciiDoc.NET
+// AsciiDoc.Net
 // Copyright (c) 2025 Guillermo Espert
 // Distributed under the MIT License. See LICENSE.adoc in the project root for full license information.
 //
@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using AsciiDoc.NET.Core;
+using AsciiDoc.Net.Core;
 
-namespace AsciiDoc.NET.Converters.Core
+namespace AsciiDoc.Net.Converters.Core
 {
     /// <summary>
     /// Defines the contract for converting AsciiDoc document trees to specific output formats.
@@ -31,7 +31,7 @@ namespace AsciiDoc.NET.Converters.Core
     /// </summary>
     /// <typeparam name="T">The output type produced by the converter (e.g., string for text formats, byte[] for binary formats).</typeparam>
     /// <remarks>
-    /// Converters are the second phase of the AsciiDoc.NET processing pipeline. They receive
+    /// Converters are the second phase of the AsciiDoc.Net processing pipeline. They receive
     /// a parsed document tree and transform it into the desired output format. The converter
     /// system is designed to be extensible, allowing custom output formats to be implemented
     /// by creating new converter classes.

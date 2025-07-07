@@ -1,4 +1,4 @@
-// AsciiDoc.NET
+// AsciiDoc.Net
 // Copyright (c) 2025 Guillermo Espert
 // Distributed under the MIT License. See LICENSE.adoc in the project root for full license information.
 //
@@ -23,10 +23,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using AsciiDoc.NET.Core;
-using AsciiDoc.NET.Core.Implementation;
+using AsciiDoc.Net.Core;
+using AsciiDoc.Net.Core.Implementation;
 
-namespace AsciiDoc.NET.Parser.Implementation
+namespace AsciiDoc.Net.Parser.Implementation
 {
     public class ParseContext : IParseContext
     {

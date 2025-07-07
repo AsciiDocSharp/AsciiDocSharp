@@ -1,4 +1,4 @@
-// AsciiDoc.NET
+// AsciiDoc.Net
 // Copyright (c) 2025 Guillermo Espert
 // Distributed under the MIT License. See LICENSE.adoc in the project root for full license information.
 //
@@ -20,12 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using AsciiDoc.NET.Converters.Html;
-using AsciiDoc.NET.Core.Implementation;
-using AsciiDoc.NET.Parser.Implementation;
+using AsciiDoc.Net.Converters.Html;
+using AsciiDoc.Net.Core.Implementation;
+using AsciiDoc.Net.Parser.Implementation;
 using Xunit;
 
-namespace AsciiDoc.NET.Tests.Unit
+namespace AsciiDoc.Net.Tests.Unit
 {
     public class CrossReferenceHtmlConversionTests
     {

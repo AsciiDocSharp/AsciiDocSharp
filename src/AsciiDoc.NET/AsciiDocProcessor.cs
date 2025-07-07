@@ -1,4 +1,4 @@
-// AsciiDoc.NET
+// AsciiDoc.Net
 // Copyright (c) 2025 Guillermo Espert
 // Distributed under the MIT License. See LICENSE.adoc in the project root for full license information.
 //
@@ -20,14 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using AsciiDoc.NET.Core;
-using AsciiDoc.NET.Parser;
-using AsciiDoc.NET.Parser.Implementation;
-using AsciiDoc.NET.Converters.Core;
+using AsciiDoc.Net.Core;
+using AsciiDoc.Net.Parser;
+using AsciiDoc.Net.Parser.Implementation;
+using AsciiDoc.Net.Converters.Core;
 using System;
 using System.IO;
 
-namespace AsciiDoc.NET
+namespace AsciiDoc.Net
 {
     /// <summary>
     /// Provides a high-level interface for processing AsciiDoc documents through parsing and conversion.
@@ -82,7 +82,7 @@ namespace AsciiDoc.NET
         /// <param name="asciiDocContent">The AsciiDoc content to parse. Cannot be null or empty.</param>
         /// <returns>A document tree representing the parsed AsciiDoc content.</returns>
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="asciiDocContent"/> is null or empty.</exception>
-        /// <exception cref="AsciiDoc.NET.Parser.ParseException">Thrown when the content cannot be parsed due to syntax errors.</exception>
+        /// <exception cref="AsciiDoc.Net.Parser.ParseException">Thrown when the content cannot be parsed due to syntax errors.</exception>
         /// <example>
         /// <code>
         /// string content = @"
@@ -119,7 +119,7 @@ namespace AsciiDoc.NET
         /// <returns>A document tree representing the parsed AsciiDoc content.</returns>
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="asciiDocContent"/> is null or empty.</exception>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="options"/> is null.</exception>
-        /// <exception cref="AsciiDoc.NET.Parser.ParseException">Thrown when the content cannot be parsed due to syntax errors.</exception>
+        /// <exception cref="AsciiDoc.Net.Parser.ParseException">Thrown when the content cannot be parsed due to syntax errors.</exception>
         public IDocument ParseFromText(string asciiDocContent, ParserOptions options)
         {
             if (string.IsNullOrEmpty(asciiDocContent))
@@ -137,7 +137,7 @@ namespace AsciiDoc.NET
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="filePath"/> is null or empty.</exception>
         /// <exception cref="System.IO.FileNotFoundException">Thrown when the specified file does not exist.</exception>
         /// <exception cref="System.UnauthorizedAccessException">Thrown when access to the file is denied.</exception>
-        /// <exception cref="AsciiDoc.NET.Parser.ParseException">Thrown when the file content cannot be parsed due to syntax errors.</exception>
+        /// <exception cref="AsciiDoc.Net.Parser.ParseException">Thrown when the file content cannot be parsed due to syntax errors.</exception>
         public IDocument ParseFromFile(string filePath)
         {
             return _parser.ParseFile(filePath);
@@ -153,7 +153,7 @@ namespace AsciiDoc.NET
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="options"/> is null.</exception>
         /// <exception cref="System.IO.FileNotFoundException">Thrown when the specified file does not exist.</exception>
         /// <exception cref="System.UnauthorizedAccessException">Thrown when access to the file is denied.</exception>
-        /// <exception cref="AsciiDoc.NET.Parser.ParseException">Thrown when the file content cannot be parsed due to syntax errors.</exception>
+        /// <exception cref="AsciiDoc.Net.Parser.ParseException">Thrown when the file content cannot be parsed due to syntax errors.</exception>
         public IDocument ParseFromFile(string filePath, ParserOptions options)
         {
             return _parser.ParseFile(filePath, options);
@@ -219,7 +219,7 @@ namespace AsciiDoc.NET
         /// <returns>The converted document in the format specified by the converter.</returns>
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="asciiDocContent"/> is null or empty.</exception>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="converter"/> is null.</exception>
-        /// <exception cref="AsciiDoc.NET.Parser.ParseException">Thrown when the content cannot be parsed.</exception>
+        /// <exception cref="AsciiDoc.Net.Parser.ParseException">Thrown when the content cannot be parsed.</exception>
         public T ProcessText<T>(string asciiDocContent, IDocumentConverter<T> converter)
         {
             var document = ParseFromText(asciiDocContent);
@@ -236,7 +236,7 @@ namespace AsciiDoc.NET
         /// <returns>The converted document in the format specified by the converter.</returns>
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="asciiDocContent"/> is null or empty.</exception>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="converter"/> or <paramref name="options"/> is null.</exception>
-        /// <exception cref="AsciiDoc.NET.Parser.ParseException">Thrown when the content cannot be parsed.</exception>
+        /// <exception cref="AsciiDoc.Net.Parser.ParseException">Thrown when the content cannot be parsed.</exception>
         public T ProcessText<T>(string asciiDocContent, IDocumentConverter<T> converter, IConverterOptions options)
         {
             var document = ParseFromText(asciiDocContent);
@@ -254,7 +254,7 @@ namespace AsciiDoc.NET
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="filePath"/> is null or empty.</exception>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="converter"/> is null.</exception>
         /// <exception cref="System.IO.FileNotFoundException">Thrown when the specified file does not exist.</exception>
-        /// <exception cref="AsciiDoc.NET.Parser.ParseException">Thrown when the file content cannot be parsed.</exception>
+        /// <exception cref="AsciiDoc.Net.Parser.ParseException">Thrown when the file content cannot be parsed.</exception>
         public T ProcessFile<T>(string filePath, IDocumentConverter<T> converter)
         {
             var document = ParseFromFile(filePath);
@@ -272,7 +272,7 @@ namespace AsciiDoc.NET
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="filePath"/> is null or empty.</exception>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="converter"/> or <paramref name="options"/> is null.</exception>
         /// <exception cref="System.IO.FileNotFoundException">Thrown when the specified file does not exist.</exception>
-        /// <exception cref="AsciiDoc.NET.Parser.ParseException">Thrown when the file content cannot be parsed.</exception>
+        /// <exception cref="AsciiDoc.Net.Parser.ParseException">Thrown when the file content cannot be parsed.</exception>
         public T ProcessFile<T>(string filePath, IDocumentConverter<T> converter, IConverterOptions options)
         {
             var document = ParseFromFile(filePath);

@@ -1,4 +1,4 @@
-// AsciiDoc.NET
+// AsciiDoc.Net
 // Copyright (c) 2025 Guillermo Espert
 // Distributed under the MIT License. See LICENSE.adoc in the project root for full license information.
 //
@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using AsciiDoc.NET.Core;
+using AsciiDoc.Net.Core;
 
-namespace AsciiDoc.NET.Parser
+namespace AsciiDoc.Net.Parser
 {
     /// <summary>
     /// Defines the contract for parsing AsciiDoc content into a structured document tree.

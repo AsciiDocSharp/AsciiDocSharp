@@ -1,4 +1,4 @@
-// AsciiDoc.NET
+// AsciiDoc.Net
 // Copyright (c) 2025 Guillermo Espert
 // Distributed under the MIT License. See LICENSE.adoc in the project root for full license information.
 //
@@ -21,10 +21,10 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
-using AsciiDoc.NET.Core;
-using AsciiDoc.NET.Core.Elements;
+using AsciiDoc.Net.Core;
+using AsciiDoc.Net.Core.Elements;
 
-namespace AsciiDoc.NET.Parser
+namespace AsciiDoc.Net.Parser
 {
     /// <summary>
     /// Interface for processing include directives in AsciiDoc documents.

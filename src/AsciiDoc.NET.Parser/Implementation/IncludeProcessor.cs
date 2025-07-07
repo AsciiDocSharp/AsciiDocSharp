@@ -1,4 +1,4 @@
-// AsciiDoc.NET
+// AsciiDoc.Net
 // Copyright (c) 2025 Guillermo Espert
 // Distributed under the MIT License. See LICENSE.adoc in the project root for full license information.
 //
@@ -24,10 +24,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using AsciiDoc.NET.Core;
-using AsciiDoc.NET.Core.Elements;
+using AsciiDoc.Net.Core;
+using AsciiDoc.Net.Core.Elements;
 
-namespace AsciiDoc.NET.Parser.Implementation
+namespace AsciiDoc.Net.Parser.Implementation
 {
     /// <summary>
     /// Processes include directives with file inclusion, circular reference detection, and path resolution.
@@ -298,7 +298,7 @@ namespace AsciiDoc.NET.Parser.Implementation
                 {
                     // Create a new section with adjusted level
                     var newLevel = Math.Max(1, section.Level + offset);
-                    var newSection = new AsciiDoc.NET.Core.Implementation.Section(section.Title, newLevel);
+                    var newSection = new AsciiDoc.Net.Core.Implementation.Section(section.Title, newLevel);
                     
                     // Copy children
                     foreach (var child in section.Children)

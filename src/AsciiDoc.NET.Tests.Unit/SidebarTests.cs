@@ -1,4 +1,4 @@
-// AsciiDoc.NET
+// AsciiDoc.Net
 // Copyright (c) 2025 Guillermo Espert
 // Distributed under the MIT License. See LICENSE.adoc in the project root for full license information.
 //
@@ -21,14 +21,14 @@
 // SOFTWARE.
 
 using Xunit;
-using AsciiDoc.NET.Core.Elements;
-using AsciiDoc.NET.Core.Implementation;
-using AsciiDoc.NET.Parser.Implementation;
-using AsciiDoc.NET.Parser;
-using AsciiDoc.NET.Converters.Html;
+using AsciiDoc.Net.Core.Elements;
+using AsciiDoc.Net.Core.Implementation;
+using AsciiDoc.Net.Parser.Implementation;
+using AsciiDoc.Net.Parser;
+using AsciiDoc.Net.Converters.Html;
 using System.Linq;
 
-namespace AsciiDoc.NET.Tests.Unit
+namespace AsciiDoc.Net.Tests.Unit
 {
     public class SidebarTests
     {

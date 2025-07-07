@@ -1,4 +1,4 @@
-// AsciiDoc.NET
+// AsciiDoc.Net
 // Copyright (c) 2025 Guillermo Espert
 // Distributed under the MIT License. See LICENSE.adoc in the project root for full license information.
 //
@@ -22,7 +22,7 @@
 
 using BenchmarkDotNet.Running;
 
-namespace AsciiDoc.NET.Tests.Performance;
+namespace AsciiDoc.Net.Tests.Performance;
 
 public class Program
 {

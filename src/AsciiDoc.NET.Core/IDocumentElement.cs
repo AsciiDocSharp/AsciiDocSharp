@@ -1,4 +1,4 @@
-// AsciiDoc.NET
+// AsciiDoc.Net
 // Copyright (c) 2025 Guillermo Espert
 // Distributed under the MIT License. See LICENSE.adoc in the project root for full license information.
 //
@@ -22,7 +22,7 @@
 
 using System.Collections.Generic;
 
-namespace AsciiDoc.NET.Core
+namespace AsciiDoc.Net.Core
 {
     /// <summary>
     /// Represents the base interface for all elements in an AsciiDoc document tree.

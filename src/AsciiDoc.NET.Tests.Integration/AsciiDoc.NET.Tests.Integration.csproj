@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AsciiDoc.NET\AsciiDoc.NET.csproj" />
+    <ProjectReference Include="..\AsciiDoc.NET\AsciiDoc.Net.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\AsciiDoc.NET.Core\AsciiDoc.NET.Core.csproj" />
-    <ProjectReference Include="..\AsciiDoc.NET.Parser\AsciiDoc.NET.Parser.csproj" />
-    <ProjectReference Include="..\AsciiDoc.NET.Converters.Core\AsciiDoc.NET.Converters.Core.csproj" />
-    <ProjectReference Include="..\AsciiDoc.NET.Converters.Html\AsciiDoc.NET.Converters.Html.csproj" />
+    <ProjectReference Include="..\AsciiDoc.NET.Core\AsciiDoc.Net.Core.csproj" />
+    <ProjectReference Include="..\AsciiDoc.NET.Parser\AsciiDoc.Net.Parser.csproj" />
+    <ProjectReference Include="..\AsciiDoc.NET.Converters.Core\AsciiDoc.Net.Converters.Core.csproj" />
+    <ProjectReference Include="..\AsciiDoc.NET.Converters.Html\AsciiDoc.Net.Converters.Html.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

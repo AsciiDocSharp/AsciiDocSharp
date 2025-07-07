@@ -1,4 +1,4 @@
-// AsciiDoc.NET
+// AsciiDoc.Net
 // Copyright (c) 2025 Guillermo Espert
 // Distributed under the MIT License. See LICENSE.adoc in the project root for full license information.
 //
@@ -23,7 +23,7 @@
 using System;
 using System.Linq;
 
-namespace AsciiDoc.NET.Core.Implementation
+namespace AsciiDoc.Net.Core.Implementation
 {
     public class Paragraph : DocumentElementBase, IParagraph
     {

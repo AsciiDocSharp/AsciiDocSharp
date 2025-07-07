@@ -1,4 +1,4 @@
-// AsciiDoc.NET
+// AsciiDoc.Net
 // Copyright (c) 2025 Guillermo Espert
 // Distributed under the MIT License. See LICENSE.adoc in the project root for full license information.
 //
@@ -20,10 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using AsciiDoc.NET.Converters.Core;
+using AsciiDoc.Net.Converters.Core;
 using System.Collections.Generic;
 
-namespace AsciiDoc.NET
+namespace AsciiDoc.Net
 {
     public class AsciiDocOptions : IConverterOptions
     {

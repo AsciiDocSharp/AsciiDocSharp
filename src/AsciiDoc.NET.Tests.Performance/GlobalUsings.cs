@@ -1,4 +1,4 @@
-// AsciiDoc.NET
+// AsciiDoc.Net
 // Copyright (c) 2025 Guillermo Espert
 // Distributed under the MIT License. See LICENSE.adoc in the project root for full license information.
 //
@@ -26,7 +26,7 @@ global using BenchmarkDotNet.Jobs;
 global using BenchmarkDotNet.Configs;
 global using BenchmarkDotNet.Toolchains.InProcess.Emit;
 global using System.Text;
-global using AsciiDoc.NET;
-global using AsciiDoc.NET.Parser.Implementation;
-global using AsciiDoc.NET.Converters.Html;
-global using AsciiDoc.NET.Core;
+global using AsciiDoc.Net;
+global using AsciiDoc.Net.Parser.Implementation;
+global using AsciiDoc.Net.Converters.Html;
+global using AsciiDoc.Net.Core;

@@ -1,4 +1,4 @@
-// AsciiDoc.NET
+// AsciiDoc.Net
 // Copyright (c) 2025 Guillermo Espert
 // Distributed under the MIT License. See LICENSE.adoc in the project root for full license information.
 //
@@ -21,9 +21,9 @@
 // SOFTWARE.
 
 using System;
-using AsciiDoc.NET.Core.Elements;
+using AsciiDoc.Net.Core.Elements;
 
-namespace AsciiDoc.NET.Core.Implementation
+namespace AsciiDoc.Net.Core.Implementation
 {
     /// <summary>
     /// Represents subscript text formatting implementation.

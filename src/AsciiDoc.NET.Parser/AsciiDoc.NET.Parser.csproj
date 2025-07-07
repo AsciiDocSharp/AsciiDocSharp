@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\AsciiDoc.NET.Core\AsciiDoc.NET.Core.csproj" />
+    <ProjectReference Include="..\AsciiDoc.NET.Core\AsciiDoc.Net.Core.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
