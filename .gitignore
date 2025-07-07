@@ -54,3 +54,4 @@ BenchmarkDotNet.Artifacts/
 *.licenseheader
 
 *.gitignore-[pP]rivate
+*.gitignore-[pP]ublic
