@@ -252,5 +252,35 @@ namespace AsciiDoc.Net.Core
         /// </summary>
         /// <param name="footnote">The footnote to visit.</param>
         void Visit(IFootnote footnote);
+
+        /// <summary>
+        /// Visits a verse element (poetry or formatted text with preserved line breaks).
+        /// </summary>
+        /// <param name="verse">The verse to visit.</param>
+        void Visit(IVerse verse);
+
+        /// <summary>
+        /// Visits a literal element (preformatted text block with preserved formatting).
+        /// </summary>
+        /// <param name="literal">The literal to visit.</param>
+        void Visit(ILiteral literal);
+
+        /// <summary>
+        /// Visits a listing element (source code block with optional syntax highlighting).
+        /// </summary>
+        /// <param name="listing">The listing to visit.</param>
+        void Visit(IListing listing);
+
+        /// <summary>
+        /// Visits an open block element (versatile container that can masquerade as other block types).
+        /// </summary>
+        /// <param name="open">The open block to visit.</param>
+        void Visit(IOpen open);
+
+        /// <summary>
+        /// Visits a passthrough element (raw content that bypasses normal AsciiDoc processing).
+        /// </summary>
+        /// <param name="passthrough">The passthrough to visit.</param>
+        void Visit(IPassthrough passthrough);
     }
 }

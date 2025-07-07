@@ -46,6 +46,104 @@ You can then add the built library projects to your solution or reference the re
 * Comprehensive test suite and performance benchmarks
 * Actively developed and open for contributions
 
+== Supported Features
+
+The following AsciiDoc features are currently supported and fully functional:
+
+=== Document Structure & Metadata
+* Document header with title, author, email, revision, and date
+* Document attributes (`:attr: value` syntax)
+* Attribute blocks (`[role="value"]`)
+* Global document attributes
+
+=== Block Elements
+
+==== Sections & Headers
+* Multi-level sections (`=`, `==`, `===`, etc.)
+* Document title (top-level)
+
+==== Lists
+* Unordered lists (bullet lists with `*` marker)
+* Ordered lists (numbered lists with `1.`, `2.`, etc.)
+* Description lists (term-definition pairs with `term::`)
+* Checklists with checkbox support:
+  - Unchecked items: `* [ ] task`
+  - Checked items: `* [x] task` or `* [X] task`
+  - Mixed lists (regular items + checkboxes)
+* Nested lists (multi-level support)
+
+==== Delimited Blocks
+* Literal blocks (preformatted text with `....`)
+* Listing blocks (code listings with `----`)
+* Open blocks (generic containers with `--`)
+* Example blocks (example content with `====`)
+* Sidebar blocks (sidebar content with `****`)
+* Block quotes (quoted content with `____`)
+* Verse blocks (poetry/verse with attribution)
+* Passthrough blocks (raw content with `++++`)
+
+==== Tables
+* Basic table structure (`|===`)
+* Table headers and data rows
+* Table cells with content
+* Table titles (optional captions)
+
+==== Admonitions
+* NOTE admonitions
+* TIP admonitions
+* IMPORTANT admonitions
+* WARNING admonitions
+* CAUTION admonitions
+
+==== Code Blocks
+* Syntax highlighted code blocks
+* Language specification for highlighting
+* Optional line numbering
+
+=== Inline Elements
+
+==== Text Formatting
+* Strong/Bold text (`*text*`)
+* Emphasis/Italic text (`_text_`)
+* Highlight text (`#text#`)
+* Superscript text (`^text^`)
+* Subscript text (`~text~`)
+* Inline code formatting (``code``)
+
+==== Links & References
+* External links (HTTP/HTTPS with optional text)
+* Anchors (`[[anchor-id]]`)
+* Cross references (`<<anchor-id>>`)
+
+==== Images
+* Inline images
+* Block-level image macros (`image::path[alt]`)
+* Alt text for images
+
+=== Macros
+* Block macros (block-level macro invocations)
+* Inline macros (inline macro invocations)
+* Image macros (image insertion)
+* Video macros (video embedding)
+* Include macros (file inclusion)
+* Table of contents generation (`toc::[]`)
+* Footnotes (references and content)
+
+=== Special Features
+* Include directives with file inclusion
+* Circular reference detection
+* Path resolution for includes
+* Error handling and recovery
+* Performance optimization
+
+=== Output Formats
+* **HTML5 Converter**: Complete standards-compliant HTML output
+  - Semantic markup with proper HTML elements
+  - CSS classes for styling support
+  - Document structure conversion
+  - Support for all implemented elements
+  - Proper checkbox rendering
+
 == Author
 
 AsciiDoc.NET is created and maintained by Guillermo Espert.

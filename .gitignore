@@ -52,3 +52,6 @@ BenchmarkDotNet.Artifacts/
 
 # Ignore license header files
 *.licenseheader
+
+*.gitignore-[pP]rivate
+*.gitignore-[pP]ublic

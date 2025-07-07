@@ -146,6 +146,21 @@ namespace AsciiDoc.Net.Converters.Html
                 case IExample example:
                     ConvertExample(example, html, context);
                     break;
+                case IVerse verse:
+                    ConvertVerse(verse, html, context);
+                    break;
+                case ILiteral literal:
+                    ConvertLiteral(literal, html, context);
+                    break;
+                case IListing listing:
+                    ConvertListing(listing, html, context);
+                    break;
+                case IOpen open:
+                    ConvertOpen(open, html, context);
+                    break;
+                case IPassthrough passthrough:
+                    ConvertPassthrough(passthrough, html, context);
+                    break;
                 case IAdmonition admonition:
                     ConvertAdmonition(admonition, html, context);
                     break;
@@ -364,6 +379,151 @@ namespace AsciiDoc.Net.Converters.Html
             
             html.AppendLine("</div>");
             html.AppendLine("</div>");
+        }
+
+        private void ConvertVerse(IVerse verse, StringBuilder html, IConverterContext context)
+        {
+            html.AppendLine("<div class=\"verseblock\">");
+            
+            // Add title if present
+            if (!string.IsNullOrEmpty(verse.Title))
+            {
+                html.AppendLine("<div class=\"title\">");
+                html.AppendLine(EscapeHtml(verse.Title));
+                html.AppendLine("</div>");
+            }
+            
+            // Add verse content preserving line breaks
+            html.AppendLine("<pre class=\"content\">");
+            html.Append(EscapeHtml(verse.Content));
+            html.AppendLine("</pre>");
+            
+            // Add attribution if present
+            if (!string.IsNullOrEmpty(verse.Author) || !string.IsNullOrEmpty(verse.Citation))
+            {
+                html.AppendLine("<div class=\"attribution\">");
+                
+                if (!string.IsNullOrEmpty(verse.Author))
+                {
+                    html.Append("&#8212; ");
+                    html.Append(EscapeHtml(verse.Author));
+                    
+                    if (!string.IsNullOrEmpty(verse.Citation))
+                    {
+                        html.Append("<br>");
+                        html.Append("<cite>");
+                        html.Append(EscapeHtml(verse.Citation));
+                        html.Append("</cite>");
+                    }
+                }
+                else if (!string.IsNullOrEmpty(verse.Citation))
+                {
+                    html.Append("<cite>");
+                    html.Append(EscapeHtml(verse.Citation));
+                    html.Append("</cite>");
+                }
+                
+                html.AppendLine();
+                html.AppendLine("</div>");
+            }
+            
+            html.AppendLine("</div>");
+        }
+
+        private void ConvertLiteral(ILiteral literal, StringBuilder html, IConverterContext context)
+        {
+            html.AppendLine("<div class=\"literalblock\">");
+            html.AppendLine("<div class=\"content\">");
+            html.AppendLine("<pre>");
+            html.Append(EscapeHtml(literal.Content));
+            html.AppendLine("</pre>");
+            html.AppendLine("</div>");
+            html.AppendLine("</div>");
+        }
+
+        private void ConvertListing(IListing listing, StringBuilder html, IConverterContext context)
+        {
+            html.AppendLine("<div class=\"listingblock\">");
+            
+            // Add title if present
+            if (!string.IsNullOrEmpty(listing.Title))
+            {
+                html.AppendLine("<div class=\"title\">");
+                html.AppendLine(EscapeHtml(listing.Title));
+                html.AppendLine("</div>");
+            }
+            
+            html.AppendLine("<div class=\"content\">");
+            
+            // Add language class if specified for syntax highlighting
+            if (!string.IsNullOrEmpty(listing.Language))
+            {
+                html.AppendLine($"<pre class=\"highlight\"><code class=\"language-{EscapeHtml(listing.Language)}\">");
+                html.Append(EscapeHtml(listing.Content));
+                html.AppendLine("</code></pre>");
+            }
+            else
+            {
+                html.AppendLine("<pre>");
+                html.Append(EscapeHtml(listing.Content));
+                html.AppendLine("</pre>");
+            }
+            
+            html.AppendLine("</div>");
+            html.AppendLine("</div>");
+        }
+
+        private void ConvertOpen(IOpen open, StringBuilder html, IConverterContext context)
+        {
+            // Open blocks are versatile containers that can masquerade as other block types
+            // When masquerading, use the appropriate CSS class, otherwise use generic openblock
+            var cssClass = string.IsNullOrEmpty(open.MasqueradeType) ? "openblock" : $"{open.MasqueradeType}block";
+            
+            html.AppendLine($"<div class=\"{cssClass}\">");
+            
+            // Add title if present
+            if (!string.IsNullOrEmpty(open.Title))
+            {
+                html.AppendLine("<div class=\"title\">");
+                html.AppendLine(EscapeHtml(open.Title));
+                html.AppendLine("</div>");
+            }
+            
+            // Add content wrapper
+            html.AppendLine("<div class=\"content\">");
+            
+            // Convert child elements
+            foreach (var child in open.Children)
+            {
+                ConvertElement(child, html, context);
+            }
+            
+            html.AppendLine("</div>");
+            html.AppendLine("</div>");
+        }
+
+        private void ConvertPassthrough(IPassthrough passthrough, StringBuilder html, IConverterContext context)
+        {
+            // Passthrough blocks output their content directly without wrapping in block elements
+            // This is the core behavior of passthrough - bypassing normal AsciiDoc processing
+            
+            // Add title if present (wrapped in a div to maintain structure)
+            if (!string.IsNullOrEmpty(passthrough.Title))
+            {
+                html.AppendLine("<div class=\"title\">");
+                html.AppendLine(EscapeHtml(passthrough.Title));
+                html.AppendLine("</div>");
+            }
+            
+            // Output the raw content directly without any HTML escaping or wrapping
+            // This allows HTML, XML, or other markup to pass through unchanged
+            html.Append(passthrough.Content);
+            
+            // Add a newline after the content to maintain formatting consistency
+            if (!string.IsNullOrEmpty(passthrough.Content) && !passthrough.Content.EndsWith("\n"))
+            {
+                html.AppendLine();
+            }
         }
 
         private void ConvertAdmonition(IAdmonition admonition, StringBuilder html, IConverterContext context)
@@ -770,6 +930,19 @@ namespace AsciiDoc.Net.Converters.Html
         .align-right {{ text-align: right; }}
         .video-title {{ font-style: italic; margin-top: 0.5rem; text-align: center; }}
         .macro {{ display: inline-block; background-color: #f0f0f0; padding: 0.2rem 0.4rem; border-radius: 3px; font-family: monospace; font-size: 0.9em; }}
+        .verseblock {{ margin: 1rem 0; }}
+        .verseblock .title {{ font-weight: bold; margin-bottom: 0.5rem; }}
+        .verseblock .content {{ white-space: pre-wrap; font-family: serif; line-height: 1.4; margin: 1rem 0; background: none; border: none; padding: 0; }}
+        .verseblock .attribution {{ text-align: right; font-style: italic; margin-top: 0.5rem; }}
+        .literalblock {{ margin: 1rem 0; }}
+        .literalblock .content {{ margin: 0; }}
+        .literalblock pre {{ background: #f8f8f8; border: 1px solid #ccc; padding: 0.5rem; font-family: monospace; white-space: pre-wrap; margin: 0; }}
+        .listingblock {{ margin: 1rem 0; }}
+        .listingblock .title {{ font-weight: bold; margin-bottom: 0.5rem; }}
+        .listingblock .content {{ margin: 0; }}
+        .listingblock pre {{ background: #f8f8f8; border: 1px solid #ccc; padding: 0.5rem; font-family: monospace; white-space: pre-wrap; margin: 0; }}
+        .listingblock .highlight {{ margin: 0; }}
+        .listingblock code {{ background: none; padding: 0; }}
         video {{ max-width: 100%; height: auto; }}
         img {{ max-width: 100%; height: auto; }}
     </style>

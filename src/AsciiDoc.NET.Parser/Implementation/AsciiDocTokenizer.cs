@@ -46,6 +46,14 @@ namespace AsciiDoc.Net.Parser.Implementation
         private static readonly Regex BlockQuoteDelimiterPattern = new Regex(@"^_{4,}$", RegexOptions.Compiled);
         private static readonly Regex SidebarDelimiterPattern = new Regex(@"^\*{4,}$", RegexOptions.Compiled);
         private static readonly Regex ExampleDelimiterPattern = new Regex(@"^={4,}$", RegexOptions.Compiled);
+        private static readonly Regex VerseAttributePattern = new Regex(@"^\[verse(?:,\s*([^,\]]+))?(?:,\s*([^\]]+))?\]$", RegexOptions.Compiled);
+        private static readonly Regex VerseDelimiterPattern = new Regex(@"^-{4,}$", RegexOptions.Compiled);
+        private static readonly Regex LiteralAttributePattern = new Regex(@"^\[literal\]$", RegexOptions.Compiled);
+        private static readonly Regex LiteralDelimiterPattern = new Regex(@"^\.{4,}$", RegexOptions.Compiled);
+        private static readonly Regex ListingAttributePattern = new Regex(@"^\[listing\]$", RegexOptions.Compiled);
+        private static readonly Regex OpenDelimiterPattern = new Regex(@"^-{2}$", RegexOptions.Compiled);
+        private static readonly Regex PassthroughAttributePattern = new Regex(@"^\[pass\]$", RegexOptions.Compiled);
+        private static readonly Regex PassthroughDelimiterPattern = new Regex(@"^\+{4,}$", RegexOptions.Compiled);
         private static readonly Regex AttributeLinePattern = new Regex(@"^:([^:!]+)(!?):\s*(.*)$", RegexOptions.Compiled);
         private static readonly Regex AttributeBlockPattern = new Regex(@"^\[([^\]]+)\]$", RegexOptions.Compiled);
         private static readonly Regex CodeBlockWithLanguagePattern = new Regex(@"^----(\w+)?$", RegexOptions.Compiled);
@@ -161,6 +169,42 @@ namespace AsciiDoc.Net.Parser.Implementation
                     return CreateToken(TokenType.ExampleDelimiter, lineContent);
                 }
 
+                var verseAttributeMatch = VerseAttributePattern.Match(lineContent);
+                if (verseAttributeMatch.Success)
+                {
+                    return CreateToken(TokenType.VerseAttribute, lineContent);
+                }
+
+                var literalAttributeMatch = LiteralAttributePattern.Match(lineContent);
+                if (literalAttributeMatch.Success)
+                {
+                    return CreateToken(TokenType.LiteralAttribute, lineContent);
+                }
+
+                var literalDelimiterMatch = LiteralDelimiterPattern.Match(lineContent);
+                if (literalDelimiterMatch.Success)
+                {
+                    return CreateToken(TokenType.LiteralDelimiter, lineContent);
+                }
+
+                var listingAttributeMatch = ListingAttributePattern.Match(lineContent);
+                if (listingAttributeMatch.Success)
+                {
+                    return CreateToken(TokenType.ListingAttribute, lineContent);
+                }
+
+                var passthroughAttributeMatch = PassthroughAttributePattern.Match(lineContent);
+                if (passthroughAttributeMatch.Success)
+                {
+                    return CreateToken(TokenType.PassthroughAttribute, lineContent);
+                }
+
+                var passthroughDelimiterMatch = PassthroughDelimiterPattern.Match(lineContent);
+                if (passthroughDelimiterMatch.Success)
+                {
+                    return CreateToken(TokenType.PassthroughDelimiter, lineContent);
+                }
+
                 var attributeLineMatch = AttributeLinePattern.Match(lineContent);
                 if (attributeLineMatch.Success)
                 {
@@ -177,6 +221,18 @@ namespace AsciiDoc.Net.Parser.Implementation
                 if (codeBlockWithLanguageMatch.Success)
                 {
                     return CreateToken(TokenType.CodeBlockDelimiter, lineContent);
+                }
+
+                var openDelimiterMatch = OpenDelimiterPattern.Match(lineContent);
+                if (openDelimiterMatch.Success)
+                {
+                    return CreateToken(TokenType.OpenDelimiter, lineContent);
+                }
+
+                var verseDelimiterMatch = VerseDelimiterPattern.Match(lineContent);
+                if (verseDelimiterMatch.Success)
+                {
+                    return CreateToken(TokenType.VerseDelimiter, lineContent);
                 }
 
                 var admonitionMatch = AdmonitionPattern.Match(lineContent);
