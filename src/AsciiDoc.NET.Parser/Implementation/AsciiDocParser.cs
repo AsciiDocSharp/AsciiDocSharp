@@ -199,6 +199,8 @@ namespace AsciiDoc.NET.Parser.Implementation
                     return ParseSidebar(context);
                 case TokenType.ExampleDelimiter:
                     return ParseExample(context);
+                case TokenType.OpenDelimiter:
+                    return ParseOpen(context);
                 case TokenType.VerseDelimiter:
                     return ParseVerse(context);
                 case TokenType.LiteralDelimiter:
@@ -207,6 +209,10 @@ namespace AsciiDoc.NET.Parser.Implementation
                     return ParseLiteralAttribute(context);
                 case TokenType.ListingAttribute:
                     return ParseListingAttribute(context);
+                case TokenType.PassthroughAttribute:
+                    return ParsePassthroughAttribute(context);
+                case TokenType.PassthroughDelimiter:
+                    return ParsePassthrough(context);
                 case TokenType.AttributeLine:
                     ParseAttributeLine(context);
                     return null;
@@ -1581,6 +1587,143 @@ namespace AsciiDoc.NET.Parser.Implementation
                 // return the original macro to allow graceful degradation
                 return includeMacro;
             }
+        }
+
+        private IOpen ParseOpen(IParseContext context)
+        {
+            // Skip the opening delimiter
+            context.Advance();
+            
+            var open = new Open(title: null, masqueradeType: null);
+            
+            // Parse open block content until we hit the closing delimiter or EOF
+            while (context.CurrentToken.Type != TokenType.EndOfFile && 
+                   context.CurrentToken.Type != TokenType.OpenDelimiter)
+            {
+                // Skip empty lines and newlines
+                if (context.CurrentToken.Type == TokenType.NewLine || 
+                    context.CurrentToken.Type == TokenType.EmptyLine)
+                {
+                    context.Advance();
+                    continue;
+                }
+                
+                // Parse child elements within the open block
+                var element = ParseElement(context);
+                if (element != null)
+                {
+                    open.AddChild(element);
+                    context.Advance();
+                }
+                else
+                {
+                    context.Advance();
+                }
+            }
+            
+            // Skip the closing delimiter if present
+            if (context.CurrentToken.Type == TokenType.OpenDelimiter)
+            {
+                context.Advance();
+            }
+            
+            return open;
+        }
+
+        private IPassthrough ParsePassthrough(IParseContext context)
+        {
+            // Skip the opening delimiter (++++++)
+            context.Advance();
+            
+            var content = new System.Text.StringBuilder();
+            
+            // Parse passthrough content until we hit the closing delimiter or EOF
+            while (context.CurrentToken.Type != TokenType.EndOfFile && 
+                   context.CurrentToken.Type != TokenType.PassthroughDelimiter)
+            {
+                if (context.CurrentToken.Type == TokenType.Text)
+                {
+                    content.Append(context.CurrentToken.Value);
+                }
+                else if (context.CurrentToken.Type == TokenType.NewLine)
+                {
+                    content.Append('\n');
+                }
+                else if (context.CurrentToken.Type == TokenType.EmptyLine)
+                {
+                    content.Append('\n');
+                }
+                
+                context.Advance();
+            }
+            
+            // Skip the closing delimiter if present
+            if (context.CurrentToken.Type == TokenType.PassthroughDelimiter)
+            {
+                context.Advance();
+            }
+            
+            // Preserve raw content without trimming (important for passthrough)
+            var passthroughContent = content.ToString();
+            
+            return new Passthrough(passthroughContent);
+        }
+
+        private IPassthrough ParsePassthroughFromText(IParseContext context)
+        {
+            // Parse text content as passthrough (used with [pass] attribute)
+            var content = new System.Text.StringBuilder();
+            
+            // Parse passthrough content until we hit an empty line, new block element, or EOF
+            while (context.CurrentToken.Type != TokenType.EndOfFile && 
+                   context.CurrentToken.Type != TokenType.EmptyLine &&
+                   context.CurrentToken.Type != TokenType.Header &&
+                   context.CurrentToken.Type != TokenType.ListItem &&
+                   context.CurrentToken.Type != TokenType.AttributeLine &&
+                   context.CurrentToken.Type != TokenType.AttributeBlockLine)
+            {
+                if (context.CurrentToken.Type == TokenType.Text)
+                {
+                    content.Append(context.CurrentToken.Value);
+                }
+                else if (context.CurrentToken.Type == TokenType.NewLine)
+                {
+                    content.Append('\n');
+                }
+                
+                context.Advance();
+            }
+            
+            // Preserve raw content without trimming (important for passthrough)
+            var passthroughContent = content.ToString();
+            
+            return new Passthrough(passthroughContent);
+        }
+
+        private IPassthrough ParsePassthroughAttribute(IParseContext context)
+        {
+            // Skip the [pass] attribute line
+            context.Advance();
+            
+            // Skip any empty lines or newlines
+            while (context.CurrentToken.Type == TokenType.NewLine || context.CurrentToken.Type == TokenType.EmptyLine)
+            {
+                context.Advance();
+            }
+            
+            // Check if the next element is a passthrough delimiter
+            if (context.CurrentToken.Type == TokenType.PassthroughDelimiter)
+            {
+                return ParsePassthrough(context);
+            }
+            // Otherwise parse following text as passthrough
+            else if (context.CurrentToken.Type == TokenType.Text)
+            {
+                return ParsePassthroughFromText(context);
+            }
+            
+            // If no content follows, return empty passthrough
+            return new Passthrough("");
         }
     }
 }

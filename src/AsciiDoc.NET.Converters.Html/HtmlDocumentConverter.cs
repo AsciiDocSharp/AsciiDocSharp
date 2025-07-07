@@ -155,6 +155,12 @@ namespace AsciiDoc.NET.Converters.Html
                 case IListing listing:
                     ConvertListing(listing, html, context);
                     break;
+                case IOpen open:
+                    ConvertOpen(open, html, context);
+                    break;
+                case IPassthrough passthrough:
+                    ConvertPassthrough(passthrough, html, context);
+                    break;
                 case IAdmonition admonition:
                     ConvertAdmonition(admonition, html, context);
                     break;
@@ -465,6 +471,59 @@ namespace AsciiDoc.NET.Converters.Html
             
             html.AppendLine("</div>");
             html.AppendLine("</div>");
+        }
+
+        private void ConvertOpen(IOpen open, StringBuilder html, IConverterContext context)
+        {
+            // Open blocks are versatile containers that can masquerade as other block types
+            // When masquerading, use the appropriate CSS class, otherwise use generic openblock
+            var cssClass = string.IsNullOrEmpty(open.MasqueradeType) ? "openblock" : $"{open.MasqueradeType}block";
+            
+            html.AppendLine($"<div class=\"{cssClass}\">");
+            
+            // Add title if present
+            if (!string.IsNullOrEmpty(open.Title))
+            {
+                html.AppendLine("<div class=\"title\">");
+                html.AppendLine(EscapeHtml(open.Title));
+                html.AppendLine("</div>");
+            }
+            
+            // Add content wrapper
+            html.AppendLine("<div class=\"content\">");
+            
+            // Convert child elements
+            foreach (var child in open.Children)
+            {
+                ConvertElement(child, html, context);
+            }
+            
+            html.AppendLine("</div>");
+            html.AppendLine("</div>");
+        }
+
+        private void ConvertPassthrough(IPassthrough passthrough, StringBuilder html, IConverterContext context)
+        {
+            // Passthrough blocks output their content directly without wrapping in block elements
+            // This is the core behavior of passthrough - bypassing normal AsciiDoc processing
+            
+            // Add title if present (wrapped in a div to maintain structure)
+            if (!string.IsNullOrEmpty(passthrough.Title))
+            {
+                html.AppendLine("<div class=\"title\">");
+                html.AppendLine(EscapeHtml(passthrough.Title));
+                html.AppendLine("</div>");
+            }
+            
+            // Output the raw content directly without any HTML escaping or wrapping
+            // This allows HTML, XML, or other markup to pass through unchanged
+            html.Append(passthrough.Content);
+            
+            // Add a newline after the content to maintain formatting consistency
+            if (!string.IsNullOrEmpty(passthrough.Content) && !passthrough.Content.EndsWith("\n"))
+            {
+                html.AppendLine();
+            }
         }
 
         private void ConvertAdmonition(IAdmonition admonition, StringBuilder html, IConverterContext context)

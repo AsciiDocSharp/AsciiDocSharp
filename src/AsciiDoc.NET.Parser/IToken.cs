@@ -189,6 +189,15 @@ namespace AsciiDoc.NET.Parser
         /// <summary>Listing block delimiters (----) and content.</summary>
         ListingDelimiter,
         
+        /// <summary>Open block delimiters (--) and content.</summary>
+        OpenDelimiter,
+        
+        /// <summary>Passthrough block attribute ([pass]) and content.</summary>
+        PassthroughAttribute,
+        
+        /// <summary>Passthrough block delimiters (++++++) and content.</summary>
+        PassthroughDelimiter,
+        
         /// <summary>Attribute definition lines (:attr: value).</summary>
         AttributeLine,
         

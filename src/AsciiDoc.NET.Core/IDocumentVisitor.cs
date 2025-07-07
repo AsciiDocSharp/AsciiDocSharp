@@ -270,5 +270,17 @@ namespace AsciiDoc.NET.Core
         /// </summary>
         /// <param name="listing">The listing to visit.</param>
         void Visit(IListing listing);
+
+        /// <summary>
+        /// Visits an open block element (versatile container that can masquerade as other block types).
+        /// </summary>
+        /// <param name="open">The open block to visit.</param>
+        void Visit(IOpen open);
+
+        /// <summary>
+        /// Visits a passthrough element (raw content that bypasses normal AsciiDoc processing).
+        /// </summary>
+        /// <param name="passthrough">The passthrough to visit.</param>
+        void Visit(IPassthrough passthrough);
     }
 }

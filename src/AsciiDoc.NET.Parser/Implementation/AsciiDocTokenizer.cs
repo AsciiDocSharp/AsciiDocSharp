@@ -51,6 +51,9 @@ namespace AsciiDoc.NET.Parser.Implementation
         private static readonly Regex LiteralAttributePattern = new Regex(@"^\[literal\]$", RegexOptions.Compiled);
         private static readonly Regex LiteralDelimiterPattern = new Regex(@"^\.{4,}$", RegexOptions.Compiled);
         private static readonly Regex ListingAttributePattern = new Regex(@"^\[listing\]$", RegexOptions.Compiled);
+        private static readonly Regex OpenDelimiterPattern = new Regex(@"^-{2}$", RegexOptions.Compiled);
+        private static readonly Regex PassthroughAttributePattern = new Regex(@"^\[pass\]$", RegexOptions.Compiled);
+        private static readonly Regex PassthroughDelimiterPattern = new Regex(@"^\+{4,}$", RegexOptions.Compiled);
         private static readonly Regex AttributeLinePattern = new Regex(@"^:([^:!]+)(!?):\s*(.*)$", RegexOptions.Compiled);
         private static readonly Regex AttributeBlockPattern = new Regex(@"^\[([^\]]+)\]$", RegexOptions.Compiled);
         private static readonly Regex CodeBlockWithLanguagePattern = new Regex(@"^----(\w+)?$", RegexOptions.Compiled);
@@ -190,6 +193,18 @@ namespace AsciiDoc.NET.Parser.Implementation
                     return CreateToken(TokenType.ListingAttribute, lineContent);
                 }
 
+                var passthroughAttributeMatch = PassthroughAttributePattern.Match(lineContent);
+                if (passthroughAttributeMatch.Success)
+                {
+                    return CreateToken(TokenType.PassthroughAttribute, lineContent);
+                }
+
+                var passthroughDelimiterMatch = PassthroughDelimiterPattern.Match(lineContent);
+                if (passthroughDelimiterMatch.Success)
+                {
+                    return CreateToken(TokenType.PassthroughDelimiter, lineContent);
+                }
+
                 var attributeLineMatch = AttributeLinePattern.Match(lineContent);
                 if (attributeLineMatch.Success)
                 {
@@ -206,6 +221,12 @@ namespace AsciiDoc.NET.Parser.Implementation
                 if (codeBlockWithLanguageMatch.Success)
                 {
                     return CreateToken(TokenType.CodeBlockDelimiter, lineContent);
+                }
+
+                var openDelimiterMatch = OpenDelimiterPattern.Match(lineContent);
+                if (openDelimiterMatch.Success)
+                {
+                    return CreateToken(TokenType.OpenDelimiter, lineContent);
                 }
 
                 var verseDelimiterMatch = VerseDelimiterPattern.Match(lineContent);
