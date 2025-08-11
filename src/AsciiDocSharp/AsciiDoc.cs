@@ -55,10 +55,10 @@ namespace AsciiDocSharp
 
         /// <summary>
         /// Converts AsciiDoc content to HTML using default settings.
-        /// This is the most common method for simple conversions.
+        /// This is the most common method for simple conversions and returns a complete HTML document.
         /// </summary>
         /// <param name="asciiDocContent">The AsciiDoc content to convert. Cannot be null or empty.</param>
-        /// <returns>The converted HTML content as a string.</returns>
+        /// <returns>The converted HTML content as a complete HTML document.</returns>
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="asciiDocContent"/> is null or empty.</exception>
         /// <exception cref="AsciiDocSharp.Parser.ParseException">Thrown when the AsciiDoc content cannot be parsed.</exception>
         /// <example>
@@ -73,7 +73,8 @@ namespace AsciiDocSharp
         /// </example>
         public static string ToHtml(string asciiDocContent)
         {
-            return _processor.ProcessText(asciiDocContent, _htmlConverter);
+            var options = new ConverterOptions { OutputFullDocument = true };
+            return _processor.ProcessText(asciiDocContent, _htmlConverter, options);
         }
 
         /// <summary>
@@ -92,10 +93,10 @@ namespace AsciiDocSharp
 
         /// <summary>
         /// Converts an AsciiDoc file to HTML using default settings.
-        /// The file is read and processed in its entirety.
+        /// The file is read and processed in its entirety and returns a complete HTML document.
         /// </summary>
         /// <param name="filePath">The path to the AsciiDoc file to convert. Cannot be null or empty.</param>
-        /// <returns>The converted HTML content as a string.</returns>
+        /// <returns>The converted HTML content as a complete HTML document.</returns>
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="filePath"/> is null or empty.</exception>
         /// <exception cref="System.IO.FileNotFoundException">Thrown when the specified file does not exist.</exception>
         /// <exception cref="System.UnauthorizedAccessException">Thrown when access to the file is denied.</exception>
@@ -108,7 +109,8 @@ namespace AsciiDocSharp
         /// </example>
         public static string FileToHtml(string filePath)
         {
-            return _processor.ProcessFile(filePath, _htmlConverter);
+            var options = new ConverterOptions { OutputFullDocument = true };
+            return _processor.ProcessFile(filePath, _htmlConverter, options);
         }
 
         /// <summary>

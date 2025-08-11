@@ -23,6 +23,7 @@
 using Xunit;
 using AsciiDocSharp;
 using AsciiDocSharp.Converters.Html;
+using AsciiDocSharp.Converters.Core;
 using System;
 
 namespace AsciiDocSharp.Tests.Unit
@@ -62,9 +63,10 @@ namespace AsciiDocSharp.Tests.Unit
             var processor = new AsciiDocProcessor();
             var converter = new HtmlDocumentConverter();
             var content = "= Test Document\n\nThis is a test paragraph.";
+            var options = new ConverterOptions { OutputFullDocument = true };
 
             // Act
-            var result = processor.ProcessText(content, converter);
+            var result = processor.ProcessText(content, converter, options);
 
             // Assert
             Assert.NotNull(result);

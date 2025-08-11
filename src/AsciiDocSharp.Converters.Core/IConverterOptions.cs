@@ -103,6 +103,28 @@ namespace AsciiDocSharp.Converters.Core
         bool PrettyPrint { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to output a complete HTML document or just the content body.
+        /// When true, the output includes DOCTYPE, html, head, and body tags with basic styling.
+        /// When false, only the converted document content is returned without HTML document wrapper.
+        /// </summary>
+        /// <value>
+        /// <c>false</c> to produce flat HTML content suitable for embedding in web applications;
+        /// <c>true</c> to produce a complete standalone HTML document. Default is false.
+        /// </value>
+        /// <example>
+        /// <code>
+        /// // Flat output
+        /// var flatOptions = new ConverterOptions { OutputFullDocument = false };
+        /// // Output: &lt;h1&gt;Title&lt;/h1&gt;&lt;p&gt;Content&lt;/p&gt;
+        /// 
+        /// // Full document output
+        /// var fullOptions = new ConverterOptions { OutputFullDocument = true };
+        /// // Output: &lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;...&lt;/head&gt;&lt;body&gt;...&lt;/body&gt;&lt;/html&gt;
+        /// </code>
+        /// </example>
+        bool OutputFullDocument { get; set; }
+
+        /// <summary>
         /// Gets a dictionary of custom properties for converter-specific configuration.
         /// This extensibility mechanism allows converters to support additional settings
         /// without breaking the base interface contract.

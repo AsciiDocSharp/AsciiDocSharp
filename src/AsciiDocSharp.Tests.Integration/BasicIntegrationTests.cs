@@ -57,6 +57,7 @@ Here's another paragraph.";
             // Arrange
             var content = "== Test Header\n\nTest paragraph.";
             var options = AsciiDocOptions.CreateMinified();
+            options.OutputFullDocument = true; // Need full document for this test
             var processor = new AsciiDocProcessor();
             var converter = new HtmlDocumentConverter();
 

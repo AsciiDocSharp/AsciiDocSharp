@@ -1,12 +1,12 @@
-= AsciiDoc.NET Library
+= AsciiDocSharp Library
 
-AsciiDoc.NET is a native .NET library designed to parse AsciiDoc documents and convert them into structured models and various output formats. It provides a modern, implementation of the AsciiDoc specification for all .NET Standard 2.0+ platforms.
+AsciiDocSharp is a native .NET library designed to parse AsciiDoc documents and convert them into structured models and various output formats. It provides a modern, implementation of the AsciiDoc specification for all .NET Standard 2.0+ platforms.
 
 
 
 == Overview
 
-AsciiDoc.NET delivers a comprehensive, extensible, and high-performance AsciiDoc processor for the .NET ecosystem. Its objectives are:
+AsciiDocSharp delivers a comprehensive, extensible, and high-performance AsciiDoc processor for the .NET ecosystem. Its objectives are:
 
 * Parse AsciiDoc files into a structured, object-oriented document model based on the official AsciiDoc specification.
 * Provide modular, pluggable output converters (HTML, Markdown, etc.), with HTML as the primary focus.
@@ -16,24 +16,24 @@ AsciiDoc.NET delivers a comprehensive, extensible, and high-performance AsciiDoc
 
 == License
 
-AsciiDoc.NET is distributed under the MIT License.  
+AsciiDocSharp is distributed under the MIT License.  
 See the link:LICENSE.adoc[LICENSE.adoc] file for details.
 
 == Status
 
-IMPORTANT: AsciiDoc.NET is under active development and has not yet had a public release.  
+IMPORTANT: AsciiDocSharp is under active development and has not yet had a public release.  
 No official NuGet package is available at this time. The library is evolving rapidly and breaking changes may occur.
 
 If you wish to experiment with or contribute to the project, you can build it from source and use it directly in your projects.
 
 == Basic Use
 
-Until a release is published, the recommended way to use AsciiDoc.NET is to clone the repository and build the project using the .NET SDK:
+Until a release is published, the recommended way to use AsciiDocSharp is to clone the repository and build the project using the .NET SDK:
 
 [source,shell]
 ----
-git clone https://github.com/AsciiDoc-Net/AsciiDoc.Net.git
-cd AsciiDoc.NET
+git clone https://github.com/AsciiDocSharp/AsciiDocSharp.git
+cd AsciiDocSharp
 dotnet build
 ----
 
@@ -146,4 +146,4 @@ The following AsciiDoc features are currently supported and fully functional:
 
 == Author
 
-AsciiDoc.NET is created and maintained by Guillermo Espert.
+AsciiDocSharp is created and maintained by Guillermo Espert.

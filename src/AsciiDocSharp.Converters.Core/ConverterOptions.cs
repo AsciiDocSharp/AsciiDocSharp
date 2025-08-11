@@ -28,6 +28,7 @@ namespace AsciiDocSharp.Converters.Core
     {
         public string OutputEncoding { get; set; } = "UTF-8";
         public bool PrettyPrint { get; set; } = true;
+        public bool OutputFullDocument { get; set; } = false;
         public IDictionary<string, object> CustomProperties { get; } = new Dictionary<string, object>();
     }
 }

@@ -69,7 +69,10 @@ namespace AsciiDocSharp.Converters.Html
             }
 
             // Wrap the content in proper HTML document structure if needed
-            return WrapInHtmlDocument(html.ToString(), document, context);
+            var body = html.ToString();
+            return context.Options.OutputFullDocument 
+                ? WrapInHtmlDocument(body, document, context)
+                : body;
         }
 
         /// <summary>

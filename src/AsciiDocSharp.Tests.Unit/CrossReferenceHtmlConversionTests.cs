@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 using AsciiDocSharp.Converters.Html;
+using AsciiDocSharp.Converters.Core;
 using AsciiDocSharp.Core.Implementation;
 using AsciiDocSharp.Parser.Implementation;
 using Xunit;
@@ -143,10 +144,11 @@ Reference to <<introduction,the intro>> section.";
             var converter = new HtmlDocumentConverter();
             var parser = new AsciiDocParser();
             var input = "Basic text with <<ref>> reference.";
+            var options = new ConverterOptions { OutputFullDocument = true };
 
             // Act
             var document = parser.Parse(input);
-            var html = converter.Convert(document);
+            var html = converter.Convert(document, options);
 
             // Assert
             Assert.Contains(".xref { color: #2196f3; text-decoration: none; }", html);
