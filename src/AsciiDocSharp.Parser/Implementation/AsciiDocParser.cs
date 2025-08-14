@@ -31,6 +31,12 @@ using AsciiDocSharp.Core.Implementation;
 
 namespace AsciiDocSharp.Parser.Implementation
 {
+    internal enum ElementType
+    {
+        Strong,
+        Emphasis
+    }
+
     public class AsciiDocParser : IAsciiDocParser
     {
         private static readonly Regex HeaderPattern = new Regex(@"^(=+)\s+(.+)$", RegexOptions.Compiled);
@@ -521,34 +527,121 @@ namespace AsciiDocSharp.Parser.Implementation
             return result;
         }
         
+        /// <summary>
+        /// Creates a formatting element (Strong or Emphasis) that can contain nested formatting.
+        /// This method recursively parses the inner content to handle nested bold/italic combinations.
+        /// </summary>
+        /// <param name="innerContent">The content inside the formatting markers.</param>
+        /// <param name="elementType">The type of formatting element to create.</param>
+        /// <returns>A formatting element with properly nested children.</returns>
+        private IDocumentElement CreateNestedFormattingElement(string innerContent, ElementType elementType)
+        {
+            // Check if the inner content contains formatting that should be parsed
+            if (ContainsNestedFormatting(innerContent))
+            {
+                // Recursively parse the inner content
+                var innerElements = ParseInlineElements(innerContent);
+                
+                // Create the appropriate container element
+                if (elementType == ElementType.Strong)
+                {
+                    var strong = new Strong(); // Empty text since we'll use children
+                    foreach (var element in innerElements)
+                    {
+                        strong.AddChild(element);
+                    }
+                    return strong;
+                }
+                else // ElementType.Emphasis
+                {
+                    var emphasis = new Emphasis(); // Empty text since we'll use children
+                    foreach (var element in innerElements)
+                    {
+                        emphasis.AddChild(element);
+                    }
+                    return emphasis;
+                }
+            }
+            else
+            {
+                // No nested formatting, create simple text element
+                if (elementType == ElementType.Strong)
+                {
+                    return new Strong(innerContent);
+                }
+                else // ElementType.Emphasis
+                {
+                    return new Emphasis(innerContent);
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Checks if the given text contains formatting patterns that should be parsed.
+        /// </summary>
+        /// <param name="text">The text to check for formatting patterns.</param>
+        /// <returns>True if the text contains formatting that should be parsed.</returns>
+        private bool ContainsNestedFormatting(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return false;
+                
+            // Check for various formatting patterns
+            return EmphasisUnconstrainedPattern.IsMatch(text) ||
+                   EmphasisConstrainedPattern.IsMatch(text) ||
+                   StrongUnconstrainedPattern.IsMatch(text) ||
+                   StrongConstrainedPattern.IsMatch(text) ||
+                   HighlightPattern.IsMatch(text) ||
+                   SuperscriptPattern.IsMatch(text) ||
+                   SubscriptPattern.IsMatch(text) ||
+                   InlineCodePattern.IsMatch(text) ||
+                   LinkPattern.IsMatch(text) ||
+                   ImagePattern.IsMatch(text);
+        }
+        
         private IDocumentElement CreateInlineElement(Match match)
         {
-            // Determine which pattern matched by checking the regex used
+            // Determine which pattern matched by checking if the entire match value matches the pattern exactly
             // Order matters - check most specific patterns first
-            if (BoldItalicPattern.IsMatch(match.Value))
+            
+            // Check if this is a bold-italic pattern (*_text_*)
+            var boldItalicMatch = BoldItalicPattern.Match(match.Value);
+            if (boldItalicMatch.Success && boldItalicMatch.Value == match.Value)
             {
                 // *_text_* - Create a Strong element containing an Emphasis element
-                var innerText = match.Groups[1].Value;
+                var innerText = boldItalicMatch.Groups[1].Value;
                 var emphasis = new Emphasis(innerText);
                 var strong = new Strong(); // Empty text since we'll use children
                 strong.AddChild(emphasis);
                 return strong;
             }
-            else if (StrongUnconstrainedPattern.IsMatch(match.Value))
+            
+            // Check if this is an unconstrained strong pattern (**text**)
+            var strongUnconstrainedMatch = StrongUnconstrainedPattern.Match(match.Value);
+            if (strongUnconstrainedMatch.Success && strongUnconstrainedMatch.Value == match.Value)
             {
-                return new Strong(ExtractInnerText(match.Groups[1].Value));
+                return CreateNestedFormattingElement(strongUnconstrainedMatch.Groups[1].Value, ElementType.Strong);
             }
-            else if (StrongConstrainedPattern.IsMatch(match.Value))
+            
+            // Check if this is a constrained strong pattern (*text*)
+            var strongConstrainedMatch = StrongConstrainedPattern.Match(match.Value);
+            if (strongConstrainedMatch.Success && strongConstrainedMatch.Value == match.Value)
             {
-                return new Strong(ExtractInnerText(match.Groups[1].Value));
+                return CreateNestedFormattingElement(strongConstrainedMatch.Groups[1].Value, ElementType.Strong);
             }
-            else if (EmphasisUnconstrainedPattern.IsMatch(match.Value))
+            
+            // Check if this is an unconstrained emphasis pattern (__text__)
+            var emphasisUnconstrainedMatch = EmphasisUnconstrainedPattern.Match(match.Value);
+            if (emphasisUnconstrainedMatch.Success && emphasisUnconstrainedMatch.Value == match.Value)
             {
-                return new Emphasis(ExtractInnerText(match.Groups[1].Value));
+                return CreateNestedFormattingElement(emphasisUnconstrainedMatch.Groups[1].Value, ElementType.Emphasis);
             }
-            else if (EmphasisConstrainedPattern.IsMatch(match.Value))
+            
+            // Check if this is a constrained emphasis pattern (_text_)
+            var emphasisConstrainedMatch = EmphasisConstrainedPattern.Match(match.Value);
+            if (emphasisConstrainedMatch.Success && emphasisConstrainedMatch.Value == match.Value)
             {
-                return new Emphasis(ExtractInnerText(match.Groups[1].Value));
+                return CreateNestedFormattingElement(emphasisConstrainedMatch.Groups[1].Value, ElementType.Emphasis);
             }
             // Legacy patterns for backward compatibility
             else if (StrongPattern.IsMatch(match.Value))

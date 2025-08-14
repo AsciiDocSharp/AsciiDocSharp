@@ -183,17 +183,64 @@ namespace AsciiDocSharp.Tests.Unit
             // Assert
             Assert.Single(document.Children);
             var paragraph = Assert.IsType<Paragraph>(document.Children[0]);
-            // Expected: bold "bo", "un", italic "ded"
+            // Expected: bold+italic "bo", "un", italic "ded"
             Assert.Equal(3, paragraph.Children.Count);
             
-            var bold = Assert.IsType<Strong>(paragraph.Children[0]);
-            Assert.Equal("bo", bold.Text);
+            // First part should be a Strong element containing an Emphasis element
+            var boldElement = Assert.IsType<Strong>(paragraph.Children[0]);
+            Assert.Single(boldElement.Children);
+            var boldItalicElement = Assert.IsType<Emphasis>(boldElement.Children[0]);
+            Assert.Equal("bo", boldItalicElement.Text);
             
             var middleText = Assert.IsType<Text>(paragraph.Children[1]);
             Assert.Equal("un", middleText.Content);
             
             var italic = Assert.IsType<Emphasis>(paragraph.Children[2]);
             Assert.Equal("ded", italic.Text);
+        }
+
+        [Fact]
+        public void Parser_Should_Parse_Nested_Bold_Italic_Correctly()
+        {
+            // Arrange
+            var parser = new AsciiDocParser();
+            var input = "**__bold italic__**";
+
+            // Act
+            var document = parser.Parse(input);
+
+            // Assert
+            Assert.Single(document.Children);
+            var paragraph = Assert.IsType<Paragraph>(document.Children[0]);
+            Assert.Single(paragraph.Children);
+            
+            // Should be a Strong element containing an Emphasis element
+            var boldElement = Assert.IsType<Strong>(paragraph.Children[0]);
+            Assert.Single(boldElement.Children);
+            var italicElement = Assert.IsType<Emphasis>(boldElement.Children[0]);
+            Assert.Equal("bold italic", italicElement.Text);
+        }
+
+        [Fact]
+        public void Parser_Should_Parse_Nested_Italic_Bold_Correctly()
+        {
+            // Arrange
+            var parser = new AsciiDocParser();
+            var input = "__**italic bold**__";
+
+            // Act
+            var document = parser.Parse(input);
+
+            // Assert
+            Assert.Single(document.Children);
+            var paragraph = Assert.IsType<Paragraph>(document.Children[0]);
+            Assert.Single(paragraph.Children);
+            
+            // Should be an Emphasis element containing a Strong element
+            var italicElement = Assert.IsType<Emphasis>(paragraph.Children[0]);
+            Assert.Single(italicElement.Children);
+            var boldElement = Assert.IsType<Strong>(italicElement.Children[0]);
+            Assert.Equal("italic bold", boldElement.Text);
         }
     }
 }
