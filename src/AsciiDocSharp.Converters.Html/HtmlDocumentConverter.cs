@@ -700,12 +700,34 @@ namespace AsciiDocSharp.Converters.Html
                     break;
                 case IEmphasis emphasis:
                     html.Append("<em>");
-                    html.Append(EscapeHtml(emphasis.Text));
+                    if (emphasis.Children.Any())
+                    {
+                        // Handle nested children
+                        foreach (var child in emphasis.Children)
+                        {
+                            ConvertInlineElement(child, html);
+                        }
+                    }
+                    else
+                    {
+                        html.Append(EscapeHtml(emphasis.Text));
+                    }
                     html.Append("</em>");
                     break;
                 case IStrong strong:
                     html.Append("<strong>");
-                    html.Append(EscapeHtml(strong.Text));
+                    if (strong.Children.Any())
+                    {
+                        // Handle nested children
+                        foreach (var child in strong.Children)
+                        {
+                            ConvertInlineElement(child, html);
+                        }
+                    }
+                    else
+                    {
+                        html.Append(EscapeHtml(strong.Text));
+                    }
                     html.Append("</strong>");
                     break;
                 case IHighlight highlight:
@@ -989,6 +1011,87 @@ namespace AsciiDocSharp.Converters.Html
             
             // For small documents, ensure minimum reasonable capacity
             return Math.Max(capacity, 4096);
+        }
+
+        /// <summary>
+        /// Helper method to convert inline elements recursively for nested formatting.
+        /// </summary>
+        /// <param name="element">The inline element to convert.</param>
+        /// <param name="html">The StringBuilder to append HTML output to.</param>
+        private void ConvertInlineElement(IDocumentElement element, StringBuilder html)
+        {
+            switch (element)
+            {
+                case IText text:
+                    html.Append(EscapeHtml(text.Content));
+                    break;
+                case IEmphasis emphasis:
+                    html.Append("<em>");
+                    if (emphasis.Children.Any())
+                    {
+                        foreach (var child in emphasis.Children)
+                        {
+                            ConvertInlineElement(child, html);
+                        }
+                    }
+                    else
+                    {
+                        html.Append(EscapeHtml(emphasis.Text));
+                    }
+                    html.Append("</em>");
+                    break;
+                case IStrong strong:
+                    html.Append("<strong>");
+                    if (strong.Children.Any())
+                    {
+                        foreach (var child in strong.Children)
+                        {
+                            ConvertInlineElement(child, html);
+                        }
+                    }
+                    else
+                    {
+                        html.Append(EscapeHtml(strong.Text));
+                    }
+                    html.Append("</strong>");
+                    break;
+                case IHighlight highlight:
+                    html.Append("<mark>");
+                    html.Append(EscapeHtml(highlight.Text));
+                    html.Append("</mark>");
+                    break;
+                case ISuperscript superscript:
+                    html.Append("<sup>");
+                    html.Append(EscapeHtml(superscript.Text));
+                    html.Append("</sup>");
+                    break;
+                case ISubscript subscript:
+                    html.Append("<sub>");
+                    html.Append(EscapeHtml(subscript.Text));
+                    html.Append("</sub>");
+                    break;
+                case IInlineCode inlineCode:
+                    html.Append($"<code>{EscapeHtml(inlineCode.Content)}</code>");
+                    break;
+                case ILink link:
+                    html.Append($"<a href=\"{EscapeHtml(link.Url)}\"");
+                    if (!string.IsNullOrEmpty(link.Title))
+                        html.Append($" title=\"{EscapeHtml(link.Title)}\"");
+                    html.Append(">");
+                    html.Append(EscapeHtml(link.Text));
+                    html.Append("</a>");
+                    break;
+                case IImage image:
+                    html.Append($"<img src=\"{EscapeHtml(image.Src)}\" alt=\"{EscapeHtml(image.Alt)}\"");
+                    if (!string.IsNullOrEmpty(image.Title))
+                        html.Append($" title=\"{EscapeHtml(image.Title)}\"");
+                    html.Append("/>");
+                    break;
+                default:
+                    // Fallback to text content
+                    html.Append(EscapeHtml(element.ToString()));
+                    break;
+            }
         }
 
         private static string EscapeHtml(string text)

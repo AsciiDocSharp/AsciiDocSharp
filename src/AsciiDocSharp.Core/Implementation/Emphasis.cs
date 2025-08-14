@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 using System;
+using System.Linq;
 
 namespace AsciiDocSharp.Core.Implementation
 {
@@ -31,11 +32,22 @@ namespace AsciiDocSharp.Core.Implementation
             Text = text ?? throw new ArgumentNullException(nameof(text));
         }
 
+        public Emphasis() : base("emphasis")
+        {
+            Text = string.Empty;
+        }
+
         public string Text { get; }
 
         public override void Accept(IDocumentVisitor visitor)
         {
             visitor.Visit(this);
+            
+            // Visit children if any
+            foreach (var child in Children.OfType<IDocumentElement>())
+            {
+                child.Accept(visitor);
+            }
         }
     }
 }

@@ -45,8 +45,20 @@ namespace AsciiDocSharp.Parser.Implementation
         private static readonly Regex LiteralAttributePattern = new Regex(@"^\[literal\]$", RegexOptions.Compiled);
         
         // Individual patterns for inline element matching
-        private static readonly Regex StrongPattern = new Regex(@"\*([^*]+)\*", RegexOptions.Compiled);
-        private static readonly Regex EmphasisPattern = new Regex(@"_([^_]+)_", RegexOptions.Compiled);
+        // Bold patterns: **text** (unconstrained) and *text* (constrained) 
+        private static readonly Regex StrongUnconstrainedPattern = new Regex(@"\*\*([^*\r\n]+?)\*\*", RegexOptions.Compiled);
+        private static readonly Regex StrongConstrainedPattern = new Regex(@"(?<=\s|^|[^\w])\*([^*\s][^*]*?[^*\s]|[^*\s])\*(?=\s|$|[^\w])", RegexOptions.Compiled);
+        
+        // Italic patterns: __text__ (unconstrained) and _text_ (constrained)
+        private static readonly Regex EmphasisUnconstrainedPattern = new Regex(@"__([^_\r\n]+?)__", RegexOptions.Compiled);
+        private static readonly Regex EmphasisConstrainedPattern = new Regex(@"(?<=\s|^|[^\w])_([^_\s][^_]*?[^_\s]|[^_\s])_(?=\s|$|[^\w])", RegexOptions.Compiled);
+        
+        // Bold-italic combined patterns
+        private static readonly Regex BoldItalicPattern = new Regex(@"\*_([^_]+?)_\*", RegexOptions.Compiled);
+        
+        // Legacy patterns for compatibility
+        private static readonly Regex StrongPattern = StrongConstrainedPattern;
+        private static readonly Regex EmphasisPattern = EmphasisConstrainedPattern;
         private static readonly Regex HighlightPattern = new Regex(@"#([^#]+)#", RegexOptions.Compiled);
         private static readonly Regex SuperscriptPattern = new Regex(@"\^([^\^]+)\^", RegexOptions.Compiled);
         private static readonly Regex SubscriptPattern = new Regex(@"~([^~]+)~", RegexOptions.Compiled);
@@ -449,10 +461,13 @@ namespace AsciiDocSharp.Parser.Implementation
             int earliestIndex = int.MaxValue;
             
             // Check each inline pattern and find the earliest match
-            // Note: FootnotePattern must come before InlineMacroPattern to avoid conflicts
+            // Note: Order matters - more specific patterns should come first
             var patterns = new[] {
-                StrongPattern,
-                EmphasisPattern,
+                BoldItalicPattern,           // *_text_* - most specific
+                StrongUnconstrainedPattern,  // **text** - unconstrained bold
+                StrongConstrainedPattern,    // *text* - constrained bold
+                EmphasisUnconstrainedPattern, // __text__ - unconstrained italic
+                EmphasisConstrainedPattern,   // _text_ - constrained italic
                 HighlightPattern,
                 SuperscriptPattern,
                 SubscriptPattern,
@@ -478,10 +493,65 @@ namespace AsciiDocSharp.Parser.Implementation
             return earliestMatch;
         }
         
+        /// <summary>
+        /// Extracts the innermost text content from nested formatting patterns.
+        /// This handles cases like **__text__** where we want to extract "text" instead of "__text__".
+        /// </summary>
+        /// <param name="text">The text content that may contain nested formatting.</param>
+        /// <returns>The innermost text content with formatting markers removed.</returns>
+        private string ExtractInnerText(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return text;
+            
+            // Remove nested emphasis patterns: __text__ -> text
+            var result = EmphasisUnconstrainedPattern.Replace(text, "$1");
+            result = EmphasisConstrainedPattern.Replace(result, "$1");
+            
+            // Remove nested strong patterns: **text** -> text  
+            result = StrongUnconstrainedPattern.Replace(result, "$1");
+            result = StrongConstrainedPattern.Replace(result, "$1");
+            
+            // Remove other nested patterns if needed
+            result = HighlightPattern.Replace(result, "$1");
+            result = SuperscriptPattern.Replace(result, "$1");
+            result = SubscriptPattern.Replace(result, "$1");
+            result = InlineCodePattern.Replace(result, "$1");
+            
+            return result;
+        }
+        
         private IDocumentElement CreateInlineElement(Match match)
         {
             // Determine which pattern matched by checking the regex used
-            if (StrongPattern.IsMatch(match.Value))
+            // Order matters - check most specific patterns first
+            if (BoldItalicPattern.IsMatch(match.Value))
+            {
+                // *_text_* - Create a Strong element containing an Emphasis element
+                var innerText = match.Groups[1].Value;
+                var emphasis = new Emphasis(innerText);
+                var strong = new Strong(); // Empty text since we'll use children
+                strong.AddChild(emphasis);
+                return strong;
+            }
+            else if (StrongUnconstrainedPattern.IsMatch(match.Value))
+            {
+                return new Strong(ExtractInnerText(match.Groups[1].Value));
+            }
+            else if (StrongConstrainedPattern.IsMatch(match.Value))
+            {
+                return new Strong(ExtractInnerText(match.Groups[1].Value));
+            }
+            else if (EmphasisUnconstrainedPattern.IsMatch(match.Value))
+            {
+                return new Emphasis(ExtractInnerText(match.Groups[1].Value));
+            }
+            else if (EmphasisConstrainedPattern.IsMatch(match.Value))
+            {
+                return new Emphasis(ExtractInnerText(match.Groups[1].Value));
+            }
+            // Legacy patterns for backward compatibility
+            else if (StrongPattern.IsMatch(match.Value))
             {
                 return new Strong(match.Groups[1].Value);
             }
